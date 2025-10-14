@@ -43,13 +43,8 @@ export function Footer() {
             </h3>
             <ul className="space-y-2">
               {displayServiceAreas.map((area) => (
-                <li key={area}>
-                  <Link
-                    href="/service-areas"
-                    className="text-sm hover:text-white transition-colors"
-                  >
-                    {area}, MA
-                  </Link>
+                <li key={area} className="text-sm">
+                  {area}, MA
                 </li>
               ))}
             </ul>

@@ -411,9 +411,11 @@ export default function HomeAdditionsPage() {
               <Button asChild size="lg" variant="secondary">
                 <Link href="/contact">Contact Us Today</Link>
               </Button>
+              {/* TODO: Create projects page
               <Button asChild size="lg" variant="outline">
                 <Link href="/projects">View Our Portfolio</Link>
               </Button>
+              */}
             </div>
           </div>
         </Container>

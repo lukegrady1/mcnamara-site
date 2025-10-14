@@ -13,8 +13,8 @@ export const BUSINESS_INFO = {
 
 export const NAVIGATION = [
   { label: "Services", href: "/services" },
-  { label: "Projects", href: "/projects" },
-  { label: "Service Areas", href: "/service-areas" },
+  // { label: "Projects", href: "/projects" }, // TODO: Create projects page
+  // { label: "Service Areas", href: "/service-areas" }, // TODO: Create service areas page
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
