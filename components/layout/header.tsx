@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { BUSINESS_INFO, NAVIGATION } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import logoImage from "@/public/mcnamara_construction_logo.jpg";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,7 +34,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/mcnamara_construction_logo.jpg"
+              src={logoImage}
               alt="McNamara Construction & Design"
               width={180}
               height={60}
