@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
   output: 'export',
-  basePath: '/mcnamara-site',
-  assetPrefix: '/mcnamara-site',
+  basePath: isProd ? '/mcnamara-site' : '',
+  assetPrefix: isProd ? '/mcnamara-site' : '',
   images: {
     unoptimized: true,
   },
