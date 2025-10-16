@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useForm, ValidationError } from "@formspree/react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,29 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BUSINESS_INFO, SERVICE_AREAS, SERVICES } from "@/lib/constants";
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    town: "",
-    projectType: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Form submission will be implemented later
-    console.log("Form submitted:", formData);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [state, handleSubmit] = useForm(process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID!);
 
   return (
     <>
@@ -43,7 +21,7 @@ export default function ContactPage() {
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
               Get Your Free In-Home Consultation
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-gray-700">
+            <p className="mx-auto max-w-2xl text-md text-gray-700">
               Let's discuss your project. Fill out the form below or give us a call at{" "}
               <a
                 href={`tel:${BUSINESS_INFO.phoneRaw}`}
@@ -67,119 +45,163 @@ export default function ContactPage() {
                   <CardTitle className="text-2xl">Request a Consultation</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Full Name *</Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          type="text"
-                          placeholder="John Smith"
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email Address *</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="john@example.com"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
+                  {state.succeeded ? (
+                    <div className="rounded-lg bg-green-50 p-6 text-center">
+                      <div className="mb-2 text-4xl">✓</div>
+                      <h3 className="mb-2 text-xl font-semibold text-green-900">
+                        Thank You!
+                      </h3>
+                      <p className="text-green-800">
+                        We've received your request and will get back to you within 24 hours.
+                      </p>
                     </div>
-
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Phone Number *</Label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          type="tel"
-                          placeholder="(508) 555-1234"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          required
-                        />
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Full Name *</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            type="text"
+                            placeholder="John Smith"
+                            required
+                            disabled={state.submitting}
+                          />
+                          <ValidationError
+                            prefix="Name"
+                            field="name"
+                            errors={state.errors}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email Address *</Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="john@example.com"
+                            required
+                            disabled={state.submitting}
+                          />
+                          <ValidationError
+                            prefix="Email"
+                            field="email"
+                            errors={state.errors}
+                          />
+                        </div>
                       </div>
+
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone Number *</Label>
+                          <Input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            placeholder="(508) 555-1234"
+                            required
+                            disabled={state.submitting}
+                          />
+                          <ValidationError
+                            prefix="Phone"
+                            field="phone"
+                            errors={state.errors}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="town">Town *</Label>
+                          <select
+                            id="town"
+                            name="town"
+                            title="Select your town"
+                            required
+                            disabled={state.submitting}
+                            className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="">Select your town</option>
+                            {SERVICE_AREAS.map((area) => (
+                              <option key={area} value={area}>
+                                {area}
+                              </option>
+                            ))}
+                            <option value="other">Other</option>
+                          </select>
+                          <ValidationError
+                            prefix="Town"
+                            field="town"
+                            errors={state.errors}
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-2">
-                        <Label htmlFor="town">Town *</Label>
+                        <Label htmlFor="projectType">Project Type *</Label>
                         <select
-                          id="town"
-                          name="town"
-                          value={formData.town}
-                          onChange={handleChange}
+                          id="projectType"
+                          name="projectType"
+                          title="Select project type"
                           required
-                          className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2"
+                          disabled={state.submitting}
+                          className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          <option value="">Select your town</option>
-                          {SERVICE_AREAS.map((area) => (
-                            <option key={area} value={area}>
-                              {area}
+                          <option value="">Select project type</option>
+                          {SERVICES.map((service) => (
+                            <option key={service.id} value={service.id}>
+                              {service.name}
                             </option>
                           ))}
                           <option value="other">Other</option>
                         </select>
+                        <ValidationError
+                          prefix="Project Type"
+                          field="projectType"
+                          errors={state.errors}
+                        />
                       </div>
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="projectType">Project Type *</Label>
-                      <select
-                        id="projectType"
-                        name="projectType"
-                        value={formData.projectType}
-                        onChange={handleChange}
-                        required
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2"
+                      <div className="space-y-2">
+                        <Label htmlFor="message">Tell Us About Your Project *</Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          placeholder="Please describe your project, timeline, budget range, and any other details..."
+                          rows={6}
+                          required
+                          disabled={state.submitting}
+                        />
+                        <ValidationError
+                          prefix="Message"
+                          field="message"
+                          errors={state.errors}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="file">Attach Files (Optional)</Label>
+                        <Input
+                          id="file"
+                          name="file"
+                          type="file"
+                          accept="image/*,.pdf"
+                          multiple
+                          disabled={state.submitting}
+                        />
+                        <p className="text-xs text-gray-500">
+                          Upload photos, plans, or inspiration images (Max 10MB per file)
+                        </p>
+                      </div>
+
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="w-full md:w-auto"
+                        disabled={state.submitting}
                       >
-                        <option value="">Select project type</option>
-                        {SERVICES.map((service) => (
-                          <option key={service.id} value={service.id}>
-                            {service.name}
-                          </option>
-                        ))}
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Tell Us About Your Project *</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="Please describe your project, timeline, budget range, and any other details..."
-                        value={formData.message}
-                        onChange={handleChange}
-                        rows={6}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="file">Attach Files (Optional)</Label>
-                      <Input
-                        id="file"
-                        name="file"
-                        type="file"
-                        accept="image/*,.pdf"
-                        multiple
-                      />
-                      <p className="text-xs text-gray-500">
-                        Upload photos, plans, or inspiration images (Max 10MB per file)
-                      </p>
-                    </div>
-
-                    <Button type="submit" size="lg" className="w-full md:w-auto">
-                      Submit Request
-                    </Button>
-                  </form>
+                        {state.submitting ? "Sending..." : "Submit Request"}
+                      </Button>
+                    </form>
+                  )}
                 </CardContent>
               </Card>
             </div>
