@@ -10,7 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BUSINESS_INFO, SERVICE_AREAS, SERVICES } from "@/lib/constants";
 
 export default function ContactPage() {
-  const [state, handleSubmit] = useForm(process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID!);
+  const [state, handleSubmit] = useForm(
+    process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID || "placeholder"
+  );
 
   return (
     <>
